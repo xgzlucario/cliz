@@ -1,0 +1,42 @@
+[
+    {
+        "name": "git",
+        "description": "Git - fast, scalable, distributed revision control system",
+        "help_arg": "-h"
+    },
+    {
+        "name": "rg",
+        "description": "Ripgrep(rg) is a line-oriented search tool that recursively searches the current directory for a regex pattern",
+        "help_arg": "-h"
+    },
+    {
+        "name": "fdfind",
+        "description": "A simple, fast and user-friendly alternative to 'find'",
+        "help_arg": "-h"
+    },
+    {
+        "name": "zstd",
+        "description": "Zstandard - Fast real-time compression algorithm",
+        "help_arg": "-h"
+    },
+    {
+        "name": "tar",
+        "description": "GNU tar",
+        "help_arg": "-h"
+    },
+    {
+        "name": "rsync",
+        "description": "Rsync is a fast and extraordinarily versatile file copying tool for both remote and local file",
+        "help_arg": "-h"
+    },
+    {
+        "name": "go",
+        "description": "The Go programming language",
+        "help_arg": "help"
+    },
+    {
+        "name": "uv",
+        "description": "An extremely fast Python package and project manager, written in Rust",
+        "help_arg": "help"
+    }
+]
