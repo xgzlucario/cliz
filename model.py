@@ -28,13 +28,9 @@ class Tool:
     def help(self, sub_command: Optional[str] = None) -> Result:
         args = f"{sub_command} {self.help_arg}" if sub_command else self.help_arg
         
-        return self.execute(args, show_progress=False)
+        return self.execute(args)
     
-    def execute(self,
-            args: str,
-            work_dir: str = ".",
-            show_progress: bool = True) -> Result:
-        
+    def execute(self, args: str, work_dir: str = ".") -> Result:
         command = self.name
 
         if self.is_uv_tool:
