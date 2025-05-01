@@ -1,12 +1,11 @@
 [project]
-name = "cli-agent"
+name = "cliq"
 version = "0.1.0"
-description = "A useful command-line agent help you work with you favorate tools!"
+description = "A useful command-line agent help you work with your favorite tools!"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "agno>=1.4.3",
-    "dotenv>=0.9.9",
     "html2text>=2025.4.15",
     "openai>=1.76.2",
     "pyinstaller>=6.13.0",

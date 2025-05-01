@@ -1,33 +1,42 @@
 from textwrap import dedent
 from typing import Optional
-from agno.agent import Agent
-from agno.models.openai.like import OpenAILike
 import requests
 import html2text
 import os
 from model import Tool, Result
-import json
+import yaml
 import argparse
-from dotenv import load_dotenv
-from agno.utils.log import logger
+
+from agno.agent import Agent
+from agno.exceptions import StopAgentRun
+from agno.models.openai.like import OpenAILike
 from agno.tools import FunctionCall, tool
 from rich.console import Console
 from rich.prompt import Prompt
 
-def load_tools() -> dict[str, Tool]:
-    with open("config.json", "r") as f:
-        tools_config = json.load(f)
+CONFIG_FILE = "cliq.yaml"
+CONFIG_DIR = os.path.expanduser("~/.cliq")
+
+yolo_mode = False
+respond_language = "English"
+global_tools = []
+
+def load_config() -> dict:
+    if os.path.exists(CONFIG_FILE):
+        with open(CONFIG_FILE, "r") as f:
+            return yaml.load(f, Loader=yaml.SafeLoader)
         
-    return {tool["name"]: Tool(**tool) for tool in tools_config}
-
-global_tools = load_tools()
-
-YOLO_MODE = False
+    elif os.path.exists(f"{CONFIG_DIR}/{CONFIG_FILE}"):
+        with open(f"{CONFIG_DIR}/{CONFIG_FILE}", "r") as f:
+            return yaml.load(f, Loader=yaml.SafeLoader)
+        
+    else:
+        raise FileNotFoundError("cliq.yaml not found")
 
 console = Console()
 
 def pre_hook(fc: FunctionCall):
-    if YOLO_MODE:
+    if yolo_mode:
         return
     
     live = console._live
@@ -37,7 +46,7 @@ def pre_hook(fc: FunctionCall):
     full_command = f"{args['command']} {args['args']}"
     
     # Ask for confirmation
-    console.print(f"\nAbout to run: [bold blue]{full_command}[/]")
+    console.print(f"About to run: [bold blue]{full_command}[/]")
     message = (
         Prompt.ask("Do you want to continue?", choices=["y", "n"], default="y")
         .strip()
@@ -64,7 +73,7 @@ def tool_help(command: str, sub_command: Optional[str] = None) -> Result:
         str: text of help.
     """
     
-    tool = global_tools[command]
+    tool = next((t for t in global_tools if t.name == command), None)
     if tool is None:
         return Result(success=False, stderr=f"tool {command} not found")
     
@@ -135,29 +144,35 @@ Respond in {language}.
 """
 
 if __name__ == "__main__":
-    load_dotenv()
-    parser = argparse.ArgumentParser(description="cli-agent: A useful command-line agent help you work with you favorate tools!")
+    config = load_config()
+    
+    # 1. Load config
+    respond_language = config["respond_language"]
+    yolo_mode = config["yolo"]
+    global_tools = [Tool(**tool) for tool in config["tools"]]
+    
+    # 2. Parse arguments
+    parser = argparse.ArgumentParser(description="cliq: A useful command-line agent help you work with your favorite tools!")
     parser.add_argument('prompt', type=str, help='The prompt to send to the agent.')
-    parser.add_argument('--yolo', action='store_true', help='enable YOLO (you only live once) mode')
+    parser.add_argument('--yolo', action='store_true', help='enable YOLO (you only live once) mode.')
     args = parser.parse_args()
     
-    # YOLO mode
-    YOLO_MODE = args.yolo
-    if YOLO_MODE:
-        logger.warning("you are now in YOLO mode!")
+    if yolo_mode or args.yolo:
+        yolo_mode = True
+        logger.warning("you are now in YOLO mode")
 
     model = OpenAILike(
-        id=os.getenv("MODEL"),
-        api_key=os.getenv("API_KEY"),
-        base_url=os.getenv("BASE_URL"),
+        id=config["llm"]["model"],
+        api_key=config["llm"]["api_key"],
+        base_url=config["llm"]["base_url"],
     )
 
     prompt = SYSTEM_PROMPT.format(
-        tools=[tool.__dict__() for tool in global_tools.values()],
+        tools=[tool.__dict__() for tool in global_tools],
         work_dir=os.getcwd(),
-        language=os.getenv("RESPOND_LANGUAGE"),
+        language=respond_language,
     )
-    
+  
     agent = Agent(
         model=model,
         instructions=dedent(prompt),
@@ -166,6 +181,7 @@ if __name__ == "__main__":
         markdown=True,
     )
 
+    # 3. Run agent
     agent.print_response(
         args.prompt,
         stream=True,
