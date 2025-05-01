@@ -12,7 +12,9 @@ Enjoy run cliq!
 
 ## Examples
 
-1. Help me download bilibili video to local folder.
+1. Help me download video `https://www.bilibili.com/video/BV1GJ411x7h7` to local folder `videos/`.
+
+![example](docs/asserts/example1.gif)
 
 ## Install
 
