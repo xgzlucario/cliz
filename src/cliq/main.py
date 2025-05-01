@@ -23,10 +23,7 @@ from .model import CommandLineTool, CommandResult
 logger = logging.getLogger("cliq")
 
 # Configuration constants
-CONFIG_FILENAME = "cliq.yaml"
-CONFIG_DIR = Path.home() / ".cliq"
-DEFAULT_CONFIG_PATH = CONFIG_DIR / CONFIG_FILENAME
-LOCAL_CONFIG_PATH = Path(CONFIG_FILENAME)
+DEFAULT_CONFIG_PATH = Path.home() / ".cliq" / "cliq.yaml"
 
 # Global state
 console = Console()
@@ -40,8 +37,11 @@ class ConfigurationError(Exception):
     pass
 
 
-def load_config() -> Dict[str, Any]:
-    """Load the CLIQ configuration from a YAML file.
+def load_config(path: Optional[str] = None) -> Dict[str, Any]:
+    """Load the cliq configuration from a YAML file.
+    
+    Args:
+        path: Optional path to the configuration file to load
     
     Returns:
         The parsed configuration dictionary
@@ -49,21 +49,20 @@ def load_config() -> Dict[str, Any]:
     Raises:
         ConfigurationError: If the configuration file cannot be found or read
     """
-    config_paths = [LOCAL_CONFIG_PATH, DEFAULT_CONFIG_PATH]
+    # Use user-specified path if provided
+    if path:
+        config_path = Path(path)
+    else:
+        # Use the default config path
+        config_path = DEFAULT_CONFIG_PATH
     
-    for config_path in config_paths:
-        if config_path.exists():
-            try:
-                with open(config_path, "r") as f:
-                    return yaml.safe_load(f)
-            except Exception as e:
-                raise ConfigurationError(f"Error reading config from {config_path}: {e}")
+    if not config_path.exists():
+        raise ConfigurationError(f"No config file found, see https://github.com/xgzlucario/cliq#Install")
     
-    # If we get here, no config file was found
-    raise ConfigurationError(
-        f"Configuration file not found. Looked in: {', '.join(str(p) for p in config_paths)}"
-    )
-
+    # Open the file and pass its contents to yaml.safe_load
+    with open(config_path, 'r') as config_file:
+        return yaml.safe_load(config_file)
+    
 
 def confirm_command_execution(fc: FunctionCall):
     """Request user confirmation before executing a command.
@@ -226,6 +225,11 @@ def main():
         help="Run in automatic mode without confirmation prompts"
     )
     parser.add_argument(
+        "-c", "--config",
+        type=str,
+        help="Path to the configuration file"
+    )
+    parser.add_argument(
         "-v", "--version",
         action="version",
         version=__version__,
@@ -235,7 +239,7 @@ def main():
     
     # 2. Load configuration
     try:
-        config = load_config()
+        config = load_config(path=args.config)
         
         # Configure global settings
         response_language = config.get("respond_language", "English")

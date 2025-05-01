@@ -18,8 +18,50 @@ Enjoy run cliq!
 
 ## Install
 
+step1: install cliq from pypi.
+
 ```bash
-git clone https://github.com/lucario/cliq.git
+pip install cliq
+```
+
+step2: create cliq config file:
+
+```bash
+mkdir -p ~/.cliq
+vim ~/.cliq/cliq.yaml
+```
+
+this is a template of config file, config your LLMs provider, and add any tools you like.
+
+```yaml
+auto: false # disable auto mode
+respond_language: "English" # you can switch language to "中文"
+llm:
+  base_url: "xxx"
+  api_key: "xxx"
+  model: "xxx"
+tools: # add more tools you like!
+  - name: "zstd"
+    description: "Zstandard - Fast real-time compression algorithm"
+    help_arg: "-h"
+  - name: "rsync"
+    description: "Rsync is a fast and extraordinarily versatile file copying tool for both remote and local file"
+    help_arg: "-h"
+  - name: "uv"
+    description: "An extremely fast Python package and project manager, written in Rust"
+    help_arg: "help"
+```
+
+step3: run cliq:
+
+```bash
+cliq "help me ..."
+```
+
+also run `auto` mode with `--auto` or set `auto: true` in config file:
+
+```bash
+cliq --auto "help me ..."
 ```
 
 ## Roadmap
