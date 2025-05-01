@@ -8,6 +8,7 @@ from typing import Dict, List, Optional, Any
 import html2text
 import requests
 import yaml
+import platform
 from agno.agent import Agent
 from agno.exceptions import StopAgentRun
 from agno.models.openai.like import OpenAILike
@@ -15,7 +16,8 @@ from agno.tools import FunctionCall, tool
 from rich.console import Console
 from rich.prompt import Prompt
 
-from model import CommandLineTool, CommandResult
+from . import __version__
+from .model import CommandLineTool, CommandResult
 
 # Configure logging
 logger = logging.getLogger("cliq")
@@ -194,8 +196,9 @@ Follow these instructions strictly:
 3. Use the appropriate tool combinations to complete the task efficiently.
 4. Do not ask unnecessary questions - try to accomplish the task directly.
 
-Current working directory:
-{work_dir}
+System Context:
+OS: {os}-{arch}
+WorkDir: {work_dir}
 
 Available command-line tools:
 {tools}
@@ -213,7 +216,7 @@ def main():
         description="CLIQ: An intelligent command-line agent"
     )
     parser.add_argument(
-        "prompt", 
+        "prompt",
         type=str, 
         help="Natural language request to send to the assistant"
     )
@@ -221,6 +224,12 @@ def main():
         "-a", "--auto", 
         action="store_true", 
         help="Run in automatic mode without confirmation prompts"
+    )
+    parser.add_argument(
+        "-v", "--version",
+        action="version",
+        version=__version__,
+        help="Show version information"
     )
     args = parser.parse_args()
     
@@ -253,11 +262,11 @@ def main():
     # 3. Set up the agent
     system_prompt = SYSTEM_PROMPT.format(
         tools=[tool.to_dict() for tool in available_tools],
+        os=platform.system(),
+        arch=platform.machine(),
         work_dir=os.getcwd(),
         language=response_language,
     )
-    
-    print(system_prompt)
     
     agent = Agent(
         model=model,

@@ -28,8 +28,7 @@ class CommandLineTool:
         self,
         name: str,
         description: str = "",
-        help_arg: str = "-h",
-        is_uv_tool: bool = False
+        help_arg: str = "-h"
     ) -> None:
         """Initialize a new CommandLineTool.
         
@@ -37,12 +36,10 @@ class CommandLineTool:
             name: The name of the command-line tool
             description: A short description of what the tool does
             help_arg: The argument to pass to get help information
-            is_uv_tool: Whether this tool should be run using uv
         """
         self.name = name
         self.description = description
         self.help_arg = help_arg
-        self.is_uv_tool = is_uv_tool
 
     def to_dict(self) -> Dict[str, str]:
         """Convert the tool to a dictionary representation.
@@ -78,11 +75,7 @@ class CommandLineTool:
             CommandResult containing execution output and status
         """
         command = self.name
-
-        if self.is_uv_tool:
-            full_command = f"uv run {command} {args}"
-        else:
-            full_command = f"{command} {args}"
+        full_command = f"{command} {args}"
 
         try:
             proc = subprocess.run(

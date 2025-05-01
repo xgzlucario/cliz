@@ -1,11 +1,12 @@
-build-app:
-	uv tool install pyinstaller
-	uv run pyinstaller --onefile --name cliq main.py
+build:
+	uv build
+
+build-and-install:
+	uv build
+	uv tool install dist/cliq-0.1.0-py3-none-any.whl --force
 
 clean-build:
 	rm -rf dist
-	rm -rf build
-	rm -f *.spec
 
 fix-imports:
 	uv run isort .

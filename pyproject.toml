@@ -1,9 +1,9 @@
 [project]
 name = "cliq"
 version = "0.1.0"
-description = "A useful command-line agent help you work with your favorite tools!"
+description = "A useful command-line agent help you work with your favorite tools"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 license = "MIT"
 authors = [{ name = "lucario", email = "xgzlucario@foxmail.com" }]
 dependencies = [
@@ -12,3 +12,14 @@ dependencies = [
     "openai>=1.76.2",
     "requests>=2.32.3",
 ]
+
+[project.scripts]
+cliq = "cliq.main:main"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = ["cliq"]
