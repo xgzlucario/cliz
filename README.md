@@ -1,43 +1,47 @@
 # cliq
 
-🤖 Hello, My name is cliq (cli + quick), A useful command-line agent help you work with your favorite tools!
+🤖 Hello human, my name is cliq (cli + quick), A useful command-line agent help you work with your favorite tools!
 
 ## Features
 
 - 🚀 Lightweight & Fast: cliq is just `10M+` and run extremely fast.
 - 🌟 CLI Agent: cliq is a `command-line agent`, help you work with your favorite cli tools!
-- 🛡️ Safe: All requests from cliq need to be approved by the user, We also has `YOLO` mode.
+- 🛡️ Secure: all tool-call requests need to be approved by user, We also has `auto` mode.
 
-Enjoy run cliq!
+Enjoy your cliq!
 
 ## Examples
 
-1. Help me download video `https://www.bilibili.com/video/BV1GJ411x7h7` to local folder `videos/`.
+Help me download video `https://www.bilibili.com/video/BV1GJ411x7h7` to local folder `videos/`.
 
 ![example](docs/asserts/example1.gif)
 
+Fetch deepseek-v3 github homepage, and save to deepseek-v3.md.
+
+![example](docs/asserts/example2.gif)
+
 ## Install
 
-Step 1: install cliq from pypi.
+Step 1: install from pip:
 
 ```bash
 pip install cliq
 ```
 
-Step 2: create cliq config file:
+Step 2: make config file:
 
 ```bash
 mkdir -p ~/.cliq
 vim ~/.cliq/cliq.yaml
 ```
 
-This is a template of config file, write your LLMs provider, and add any tools you like.
+This is a template yaml, write your LLMs provider, and add any tools you like.
 
 ```yaml
 auto: false # disable auto mode
 respond_language: "English" # you can switch language to "中文"
 llm:
-  base_url: "xxx"
+  base_url: "xxx" # set your favorite LLMs
   api_key: "xxx"
   model: "xxx"
 tools: # add more tools you like!
@@ -52,16 +56,16 @@ tools: # add more tools you like!
     help_arg: "help"
 ```
 
-Step 3: run cliq:
+Step 3: Run cliq!
 
 ```bash
-cliq "help me ..."
+cliq "build a operation system for me. :D"
 ```
 
 Also run `auto` mode with `--auto` or set `auto: true` in config file:
 
 ```bash
-cliq --auto "help me ..."
+cliq --auto "build a operation system for me. :D"
 ```
 
 ## Roadmap
