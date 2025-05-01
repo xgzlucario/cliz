@@ -18,20 +18,20 @@ Enjoy run cliq!
 
 ## Install
 
-step1: install cliq from pypi.
+Step 1: install cliq from pypi.
 
 ```bash
 pip install cliq
 ```
 
-step2: create cliq config file:
+Step 2: create cliq config file:
 
 ```bash
 mkdir -p ~/.cliq
 vim ~/.cliq/cliq.yaml
 ```
 
-this is a template of config file, config your LLMs provider, and add any tools you like.
+This is a template of config file, write your LLMs provider, and add any tools you like.
 
 ```yaml
 auto: false # disable auto mode
@@ -52,13 +52,13 @@ tools: # add more tools you like!
     help_arg: "help"
 ```
 
-step3: run cliq:
+Step 3: run cliq:
 
 ```bash
 cliq "help me ..."
 ```
 
-also run `auto` mode with `--auto` or set `auto: true` in config file:
+Also run `auto` mode with `--auto` or set `auto: true` in config file:
 
 ```bash
 cliq --auto "help me ..."
