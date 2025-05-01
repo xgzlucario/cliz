@@ -1,6 +1,8 @@
-from pydantic import BaseModel
-from typing import Optional
 import subprocess
+from typing import Optional
+
+from pydantic import BaseModel
+
 
 class Result(BaseModel):
     success: bool

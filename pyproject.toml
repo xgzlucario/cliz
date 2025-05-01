@@ -3,11 +3,12 @@ name = "cliq"
 version = "0.1.0"
 description = "A useful command-line agent help you work with your favorite tools!"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.9"
+license = "MIT"
+authors = [{ name = "lucario", email = "xgzlucario@foxmail.com" }]
 dependencies = [
     "agno>=1.4.3",
     "html2text>=2025.4.15",
     "openai>=1.76.2",
-    "pyinstaller>=6.13.0",
     "requests>=2.32.3",
 ]

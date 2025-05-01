@@ -1,8 +1,8 @@
 yolo: false
-respond_language: "中文"
+respond_language: "English"
 llm:
   base_url: "https://openrouter.ai/api/v1"
-  api_key: "sk-xxxxxx"
+  api_key: "sk-xxxxxxxxxxxxx"
   model: "deepseek/deepseek-chat-v3-0324"
 tools:
   - name: "git"

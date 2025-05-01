@@ -1,18 +1,19 @@
+import argparse
+import os
 from textwrap import dedent
 from typing import Optional
-import requests
-import html2text
-import os
-from model import Tool, Result
-import yaml
-import argparse
 
+import html2text
+import requests
+import yaml
 from agno.agent import Agent
 from agno.exceptions import StopAgentRun
 from agno.models.openai.like import OpenAILike
 from agno.tools import FunctionCall, tool
 from rich.console import Console
 from rich.prompt import Prompt
+
+from model import Result, Tool
 
 CONFIG_FILE = "cliq.yaml"
 CONFIG_DIR = os.path.expanduser("~/.cliq")
@@ -21,19 +22,19 @@ yolo_mode = False
 respond_language = "English"
 global_tools = []
 
+console = Console()
+
 def load_config() -> dict:
     if os.path.exists(CONFIG_FILE):
         with open(CONFIG_FILE, "r") as f:
-            return yaml.load(f, Loader=yaml.SafeLoader)
+            return yaml.safe_load(f)
         
     elif os.path.exists(f"{CONFIG_DIR}/{CONFIG_FILE}"):
         with open(f"{CONFIG_DIR}/{CONFIG_FILE}", "r") as f:
-            return yaml.load(f, Loader=yaml.SafeLoader)
+            return yaml.safe_load(f)
         
     else:
-        raise FileNotFoundError("cliq.yaml not found")
-
-console = Console()
+        raise FileNotFoundError(f"cliq.yaml not found in {CONFIG_DIR}")
 
 def pre_hook(fc: FunctionCall):
     if yolo_mode:
@@ -130,14 +131,14 @@ def think(thought: str) -> str:
 
 SYSTEM_PROMPT = """
 You are a helpful assistant that use cli tools to complete the user's task. Follow the instructions strictly:
-1. You can use the tools provided above or the default system tools.
+1. You can use the tools preferred or the other system tools is OK.
 2. MUST USE `tool_help` and `tool_execute` to execute the command-line tool.
 3. Use the appropriate tool combination to complete the task, don't ask any questions.
 
 Current working directory:
 {work_dir}
 
-Available command-line tools:
+Preferred command-line tools:
 {tools}
 
 Respond in {language}.
