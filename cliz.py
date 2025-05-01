@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """
-Development entry point for the cliq application.
+Development entry point for the cliz application.
 
 This file is a convenience script for running the application during development.
-For production use, please install the package and use the 'cliq' command that will
+For production use, please install the package and use the 'cliz' command that will
 be installed by the package installation process as defined in pyproject.toml:
     [project.scripts]
-    cliq = "src.cliq.main:main"
+    cliz = "src.cliz.main:main"
 """
 
-from src.cliq.main import main
+from src.cliz.main import main
 
 if __name__ == "__main__":
     exit(main())

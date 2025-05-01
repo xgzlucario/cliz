@@ -1,5 +1,5 @@
 [project]
-name = "cliq"
+name = "cliz"
 version = "0.1.0"
 description = "A useful command-line agent help you work with your favorite tools"
 readme = "README.md"
@@ -14,7 +14,7 @@ dependencies = [
 ]
 
 [project.scripts]
-cliq = "cliq.main:main"
+cliz = "cliz.main:main"
 
 [build-system]
 requires = ["setuptools>=61.0"]
@@ -22,4 +22,4 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
-packages = ["cliq"]
+packages = ["cliz"]

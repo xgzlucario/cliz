@@ -20,10 +20,10 @@ from . import __version__
 from .model import CommandLineTool, CommandResult
 
 # Configure logging
-logger = logging.getLogger("cliq")
+logger = logging.getLogger("cliz")
 
 # Configuration constants
-DEFAULT_CONFIG_PATH = Path.home() / ".cliq" / "cliq.yaml"
+DEFAULT_CONFIG_PATH = Path.home() / ".cliz" / "cliz.yaml"
 
 # Global state
 console = Console()
@@ -38,7 +38,7 @@ class ConfigurationError(Exception):
 
 
 def load_config(path: Optional[str] = None) -> Dict[str, Any]:
-    """Load the cliq configuration from a YAML file.
+    """Load the cliz configuration from a YAML file.
     
     Args:
         path: Optional path to the configuration file to load
@@ -57,7 +57,7 @@ def load_config(path: Optional[str] = None) -> Dict[str, Any]:
         config_path = DEFAULT_CONFIG_PATH
     
     if not config_path.exists():
-        raise ConfigurationError(f"No config file found, see https://github.com/xgzlucario/cliq#Install")
+        raise ConfigurationError(f"No config file found, see https://github.com/xgzlucario/cliz#Install")
     
     # Open the file and pass its contents to yaml.safe_load
     with open(config_path, 'r') as config_file:
@@ -207,12 +207,12 @@ Respond in {language}.
 
 
 def main():
-    """Main entry point for the CLIQ application."""
+    """Main entry point for the cliz application."""
     global available_tools, auto_mode, response_language
     
     # 1. Parse command line arguments
     parser = argparse.ArgumentParser(
-        description="CLIQ: An intelligent command-line agent"
+        description="cliz: An intelligent command-line agent"
     )
     parser.add_argument(
         "prompt",

@@ -2,7 +2,7 @@ auto: false
 respond_language: "English"
 llm:
   base_url: "https://openrouter.ai/api/v1"
-  api_key: "sk-xxxxxxxxxxxxxx"
+  api_key: "sk-xxxxxx"
   model: "deepseek/deepseek-chat-v3-0324"
 tools:
   - name: "rg"

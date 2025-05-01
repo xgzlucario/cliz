@@ -1,14 +1,14 @@
-# cliq
+# cliz
 
-🤖 Hello human, my name is cliq (cli + quick), A useful command-line agent help you work with your favorite tools!
+🤖 Hello human, my name is cliz (cli + z), A useful command-line agent help you work with your favorite tools!
 
 ## Features
 
-- 🚀 Lightweight & Fast: cliq is just `10M+` and run extremely fast.
-- 🌟 CLI Agent: cliq is a `command-line agent`, help you work with your favorite cli tools!
+- 🚀 Lightweight & Fast: cliz is just `10M+` and run extremely fast.
+- 🌟 CLI Agent: cliz is a `command-line agent`, help you work with your favorite cli tools!
 - 🛡️ Secure: all tool-call requests need to be approved by user, We also has `auto` mode.
 
-Enjoy your cliq!
+Enjoy your cliz!
 
 ## Examples
 
@@ -25,14 +25,14 @@ Fetch deepseek-v3 github homepage, and save to deepseek-v3.md.
 Step 1: install from pip:
 
 ```bash
-pip install cliq
+pip install cliz
 ```
 
 Step 2: make config file:
 
 ```bash
-mkdir -p ~/.cliq
-vim ~/.cliq/cliq.yaml
+mkdir -p ~/.cliz
+vim ~/.cliz/cliz.yaml
 ```
 
 This is a template yaml, write your LLMs provider, and add any tools you like.
@@ -56,16 +56,16 @@ tools: # add more tools you like!
     help_arg: "help"
 ```
 
-Step 3: Run cliq!
+Step 3: Run cliz!
 
 ```bash
-cliq "build a operation system for me. :D"
+cliz "build a operation system for me. :D"
 ```
 
 Also run `auto` mode with `--auto` or set `auto: true` in config file:
 
 ```bash
-cliq --auto "build a operation system for me. :D"
+cliz --auto "build a operation system for me. :D"
 ```
 
 ## Roadmap
