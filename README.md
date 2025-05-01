@@ -2,6 +2,13 @@
 
 🤖 Hello human, my name is cliz (cli + z), A useful command-line agent help you work with your favorite tools!
 
+## Table of Contents
+
+- [Features](#features)
+- [Examples](#examples)
+- [Install](#install)
+- [Roadmap](#roadmap)
+
 ## Features
 
 - 🚀 Lightweight & Fast: cliz is just `10M+` and run extremely fast.
@@ -35,7 +42,7 @@ mkdir -p ~/.cliz
 vim ~/.cliz/cliz.yaml
 ```
 
-This is a template yaml, write your LLMs provider, and add any tools you like.
+This is a template yaml, write your LLMs provider, and add any tools you like. This is my [config](cliz.yaml):
 
 ```yaml
 auto: false # disable auto mode

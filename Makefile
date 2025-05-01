@@ -1,12 +1,11 @@
 build:
+	rm -rf dist
 	uv build
 
 build-and-install:
-	uv build
-	uv tool install dist/cliz-0.1.0-py3-none-any.whl --force
-
-clean-build:
 	rm -rf dist
+	uv build
+	uv tool install dist/cliz-0.1.1-py3-none-any.whl --force
 
 fix-imports:
 	uv run isort .

@@ -1,6 +1,6 @@
 [project]
 name = "cliz"
-version = "0.1.0"
+version = "0.1.1"
 description = "A useful command-line agent help you work with your favorite tools"
 readme = "README.md"
 requires-python = ">=3.11"

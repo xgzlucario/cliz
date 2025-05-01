@@ -217,12 +217,12 @@ def main():
     parser.add_argument(
         "prompt",
         type=str, 
-        help="Natural language request to send to the assistant"
+        help="Task description in natural language"
     )
     parser.add_argument(
         "-a", "--auto", 
-        action="store_true", 
-        help="Run in automatic mode without confirmation prompts"
+        action="store_true",
+        help="Run in auto mode without confirmation"
     )
     parser.add_argument(
         "-c", "--config",
