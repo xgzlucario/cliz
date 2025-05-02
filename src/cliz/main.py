@@ -1,14 +1,15 @@
 import argparse
 import logging
 import os
+import platform
+from datetime import datetime
 from pathlib import Path
 from textwrap import dedent
-from typing import Dict, List, Optional, Any
+from typing import Any, Dict, List, Optional
 
 import html2text
-import requests
+import httpx
 import yaml
-import platform
 from agno.agent import Agent
 from agno.exceptions import StopAgentRun
 from agno.models.openai.like import OpenAILike
@@ -149,7 +150,7 @@ def fetch_website_content(url: str, output_file: str) -> str:
         A message describing the result of the operation
     """
     try:
-        response = requests.get(url)
+        response = httpx.get(url)
         response.raise_for_status()  # Raise exception for HTTP errors
         
         # Convert HTML to markdown text
@@ -198,6 +199,7 @@ Follow these instructions strictly:
 System Context:
 OS: {os}-{arch}
 WorkDir: {work_dir}
+Datetime: {datetime}
 
 Available command-line tools:
 {tools}
@@ -228,6 +230,11 @@ def main():
         "-c", "--config",
         type=str,
         help="Path to the configuration file"
+    )
+    parser.add_argument(
+        "-d", "--debug",
+        action="store_true",
+        help="Debug mode"
     )
     parser.add_argument(
         "-v", "--version",
@@ -269,6 +276,7 @@ def main():
         os=platform.system(),
         arch=platform.machine(),
         work_dir=os.getcwd(),
+        datetime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         language=response_language,
     )
     
@@ -278,6 +286,7 @@ def main():
         tools=[get_tool_help, execute_command, fetch_website_content, think],
         show_tool_calls=True,
         markdown=True,
+        debug_mode=args.debug,
     )
     
     # 4. Run the agent and print response
@@ -286,6 +295,8 @@ def main():
             args.prompt,
             stream=True,
             console=console,
+            show_message=False,
+            show_intermediate_steps=True,
         )
         return 0
     except Exception as e:
