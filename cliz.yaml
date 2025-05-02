@@ -35,3 +35,6 @@ tools:
   - name: "yt-dlp"
     description: "A feature-rich command-line audio/video downloader"
     help_arg: "-h"
+  - name: "taskbook"
+    description: "Tasks, boards & notes for the command-line habitat"
+    help_arg: "-h"
