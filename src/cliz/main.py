@@ -140,7 +140,7 @@ def execute_command(command: str, args: str, work_dir: str = ".") -> CommandResu
 
 @tool
 def fetch_website_content(url: str, output_file: str) -> str:
-    """Fetch and save content from a website.
+    """Fetch and save `markdown` formatted content from a website.
 
     Args:
         url: The URL of the website to fetch
