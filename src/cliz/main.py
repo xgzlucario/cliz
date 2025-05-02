@@ -201,7 +201,7 @@ OS: {os}-{arch}
 WorkDir: {work_dir}
 Datetime: {datetime}
 
-Available command-line tools:
+Preffered command-line tools:
 {tools}
 
 Respond in {language}.
