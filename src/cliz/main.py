@@ -13,8 +13,10 @@ import yaml
 from agno.agent import Agent
 from agno.exceptions import StopAgentRun
 from agno.models.openai.like import OpenAILike
+from agno.storage.sqlite import SqliteStorage
 from agno.tools import FunctionCall, tool
 from rich.console import Console
+from rich.pretty import pprint
 from rich.prompt import Prompt
 
 from . import __version__
@@ -24,7 +26,9 @@ from .model import CommandLineTool, CommandResult
 logger = logging.getLogger("cliz")
 
 # Configuration constants
-DEFAULT_CONFIG_PATH = Path.home() / ".cliz" / "cliz.yaml"
+CLIZ_HOME_PATH = Path.home() / ".cliz"
+CONFIG_FILE_PATH = CLIZ_HOME_PATH / "cliz.yaml"
+DB_FILE_PATH = CLIZ_HOME_PATH / "cliz.db"
 
 # Global state
 console = Console()
@@ -50,12 +54,8 @@ def load_config(path: Optional[str] = None) -> Dict[str, Any]:
     Raises:
         ConfigurationError: If the configuration file cannot be found or read
     """
-    # Use user-specified path if provided
-    if path:
-        config_path = Path(path)
-    else:
-        # Use the default config path
-        config_path = DEFAULT_CONFIG_PATH
+    # Use specified path if provided
+    config_path = Path(path) if path else CONFIG_FILE_PATH
     
     if not config_path.exists():
         raise ConfigurationError(f"No config file found, see https://github.com/xgzlucario/cliz#Install")
@@ -251,16 +251,20 @@ def main():
         # Configure global settings
         response_language = config.get("respond_language", "English")
         auto_mode = config.get("auto", False) or args.auto
+        chat_history = config.get("chat_history", False)
         
         # Initialize tools from configuration
         available_tools = [CommandLineTool(**tool_config) for tool_config in config.get("tools", [])]
         
         # Initialize LLM model
-        model_config = config.get("llm", {})
+        model_config = config.get("llm")
+        if model_config is None:
+            raise ConfigurationError("No LLM configuration found, see https://github.com/xgzlucario/cliz#Install")
+        
         model = OpenAILike(
-            id=model_config.get("model", ""),
-            api_key=model_config.get("api_key", ""),
-            base_url=model_config.get("base_url", ""),
+            id=model_config.get("model"),
+            api_key=model_config.get("api_key"),
+            base_url=model_config.get("base_url"),
         )
         
         if auto_mode:
@@ -287,6 +291,11 @@ def main():
         show_tool_calls=True,
         markdown=True,
         debug_mode=args.debug,
+        # Chat history configuration
+        session_id="fake_session_id",
+        storage=SqliteStorage(table_name="agent_sessions", db_file=DB_FILE_PATH),
+        add_history_to_messages=chat_history,
+        num_history_runs=3,
     )
     
     # 4. Run the agent and print response

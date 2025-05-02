@@ -1,6 +1,6 @@
 [project]
 name = "cliz"
-version = "0.1.1"
+version = "0.1.2"
 description = "A useful command-line agent help you work with your favorite tools"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -10,6 +10,7 @@ dependencies = [
     "agno>=1.4.3",
     "html2text>=2025.4.15",
     "openai>=1.76.2",
+    "sqlalchemy>=2.0.40",
 ]
 
 [project.scripts]

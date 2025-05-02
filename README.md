@@ -13,6 +13,7 @@
 
 - 🚀 Lightweight & Fast: cliz is just `10M+` and run extremely fast.
 - 🌟 CLI Agent: cliz is a `command-line agent`, help you work with your favorite cli tools!
+- 📚 Chat History: cliz can remember chat history, and continue the conversation.
 - 🛡️ Secure: all tool-call requests need to be approved by user, We also has `auto` mode.
 
 Enjoy your cliz!
@@ -46,9 +47,10 @@ This is a template yaml, write your LLMs provider, and add any tools you like. T
 
 ```yaml
 auto: false # disable auto mode
+chat_history: true # enable chat history
 respond_language: "English" # you can switch language to "中文"
-llm:
-  base_url: "xxx" # set your favorite LLMs
+llm: # set your favorite LLMs
+  base_url: "xxx"
   api_key: "xxx"
   model: "xxx"
 tools: # add more tools you like!
@@ -77,5 +79,5 @@ cliz --auto "build a operation system for me. :D"
 
 ## Roadmap
 
-- [ ] Add agent memory & chat history
-- [ ] Release to pypi & homebrew
+- [ ] Add agent memory
+- [ ] Release to homebrew
