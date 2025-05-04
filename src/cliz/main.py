@@ -20,7 +20,7 @@ from rich.pretty import pprint
 from rich.prompt import Prompt
 
 from . import __version__
-from .model import CommandLineTool
+from .shell import ShellToolkit
 
 # Configure logging
 logger = logging.getLogger("cliz")
@@ -114,11 +114,7 @@ def get_tool_help(command: str, sub_command: Optional[str] = None, help_arg: str
     Returns:
         str: The help text or error message
     """
-    tool = CommandLineTool(name=command)
-    
-    print(command, sub_command, help_arg)
-    
-    return tool.help(sub_command=sub_command, help_arg=help_arg)
+    return ShellToolkit().help(command, sub_command, help_arg)
 
 
 @tool(pre_hook=confirm_command_execution)
@@ -132,12 +128,8 @@ def execute_command(command: str, args: str, work_dir: str = ".") -> str:
 
     Returns:
         str: The command output
-    """
-    tool = CommandLineTool(name=command)
-    
-    print(command, args, work_dir)
-        
-    return tool.execute(args=args, work_dir=work_dir)
+    """     
+    return ShellToolkit().execute(command, args, work_dir)
 
 
 @tool
