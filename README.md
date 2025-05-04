@@ -56,13 +56,12 @@ llm: # set your favorite LLMs
 tools: # add more tools you like!
   - name: "zstd"
     description: "Zstandard - Fast real-time compression algorithm"
-    help_arg: "-h"
   - name: "rsync"
     description: "Rsync is a fast and extraordinarily versatile file copying tool for both remote and local file"
-    help_arg: "-h"
   - name: "uv"
     description: "An extremely fast Python package and project manager, written in Rust"
-    help_arg: "help"
+  - name: "yt-dlp"
+    description: "A feature-rich command-line audio/video downloader"
 ```
 
 Step 3: Run cliz!

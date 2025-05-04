@@ -20,7 +20,7 @@ from rich.pretty import pprint
 from rich.prompt import Prompt
 
 from . import __version__
-from .model import CommandLineTool, CommandResult
+from .model import CommandLineTool
 
 # Configure logging
 logger = logging.getLogger("cliz")
@@ -32,7 +32,6 @@ DB_FILE_PATH = CLIZ_HOME_PATH / "cliz.db"
 
 # Global state
 console = Console()
-available_tools: List[CommandLineTool] = []
 auto_mode = False
 response_language = "English"
 
@@ -104,25 +103,26 @@ def confirm_command_execution(fc: FunctionCall):
 
 
 @tool
-def get_tool_help(command: str, sub_command: Optional[str] = None) -> CommandResult:
+def get_tool_help(command: str, sub_command: Optional[str] = None, help_arg: str = "-h") -> str:
     """Get help information for a command-line tool.
 
     Args:
         command: The command to get help for
         sub_command: Optional sub-command to get help for
-
+        help_arg: The argument to pass to get help
+        
     Returns:
-        CommandResult containing the help text or error message
+        str: The help text or error message
     """
-    matching_tool = next((t for t in available_tools if t.name == command), None)
-    if matching_tool is None:
-        return CommandResult(success=False, stderr=f"Tool '{command}' not found")
+    tool = CommandLineTool(name=command)
     
-    return matching_tool.help(sub_command=sub_command)
+    print(command, sub_command, help_arg)
+    
+    return tool.help(sub_command=sub_command, help_arg=help_arg)
 
 
 @tool(pre_hook=confirm_command_execution)
-def execute_command(command: str, args: str, work_dir: str = ".") -> CommandResult:
+def execute_command(command: str, args: str, work_dir: str = ".") -> str:
     """Execute a command-line tool with the given arguments.
 
     Args:
@@ -131,9 +131,11 @@ def execute_command(command: str, args: str, work_dir: str = ".") -> CommandResu
         work_dir: Working directory for command execution
 
     Returns:
-        CommandResult containing the command output and execution status
+        str: The command output
     """
     tool = CommandLineTool(name=command)
+    
+    print(command, args, work_dir)
         
     return tool.execute(args=args, work_dir=work_dir)
 
@@ -210,7 +212,7 @@ Respond in {language}.
 
 def main():
     """Main entry point for the cliz application."""
-    global available_tools, auto_mode, response_language
+    global auto_mode, response_language
     
     # 1. Parse command line arguments
     parser = argparse.ArgumentParser(
@@ -252,10 +254,7 @@ def main():
         response_language = config.get("respond_language", "English")
         auto_mode = config.get("auto", False) or args.auto
         chat_history = config.get("chat_history", False)
-        
-        # Initialize tools from configuration
-        available_tools = [CommandLineTool(**tool_config) for tool_config in config.get("tools", [])]
-        
+           
         # Initialize LLM model
         model_config = config.get("llm")
         if model_config is None:
@@ -276,7 +275,7 @@ def main():
     
     # 3. Set up the agent
     system_prompt = SYSTEM_PROMPT.format(
-        tools=[tool.to_dict() for tool in available_tools],
+        tools=config.get("tools"),
         os=platform.system(),
         arch=platform.machine(),
         work_dir=os.getcwd(),
