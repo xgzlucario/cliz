@@ -191,7 +191,7 @@ Follow these instructions strictly:
 4. Do not ask unnecessary questions - try to accomplish the task directly.
 
 System Context:
-OS: {os}-{arch}
+OS: {uname}
 WorkDir: {work_dir}
 Datetime: {datetime}
 
@@ -268,8 +268,7 @@ def main():
     # 3. Set up the agent
     system_prompt = SYSTEM_PROMPT.format(
         tools=config.get("tools"),
-        os=platform.system(),
-        arch=platform.machine(),
+        uname=platform.uname(),
         work_dir=os.getcwd(),
         datetime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         language=response_language,
