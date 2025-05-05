@@ -15,6 +15,7 @@ from agno.exceptions import StopAgentRun
 from agno.models.openai.like import OpenAILike
 from agno.storage.sqlite import SqliteStorage
 from agno.tools import FunctionCall, tool
+from agno.tools.thinking import ThinkingTools
 from rich.console import Console
 from rich.pretty import pprint
 from rich.prompt import Prompt
@@ -164,22 +165,6 @@ def fetch_website_content(url: str, output_file: str) -> str:
         return error_msg
 
 
-@tool
-def think(thought: str) -> str:
-    """Process a thought without executing any external commands.
-
-    This tool allows the agent to process complex reasoning or store
-    intermediate calculations without performing any side effects.
-
-    Args:
-        thought: The thought to process
-
-    Returns:
-        The thought, unchanged
-    """
-    return thought
-
-
 # System prompt template for the agent
 SYSTEM_PROMPT = """
 You are a helpful assistant that uses command-line tools to complete the user's tasks.
@@ -277,7 +262,7 @@ def main():
     agent = Agent(
         model=model,
         instructions=dedent(system_prompt),
-        tools=[get_tool_help, execute_command, fetch_website_content, think],
+        tools=[get_tool_help, execute_command, fetch_website_content, ThinkingTools()],
         show_tool_calls=True,
         markdown=True,
         debug_mode=args.debug,
