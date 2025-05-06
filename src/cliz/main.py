@@ -5,7 +5,7 @@ import platform
 from datetime import datetime
 from pathlib import Path
 from textwrap import dedent
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 import html2text
 import httpx
@@ -82,10 +82,11 @@ def confirm_command_execution(fc: FunctionCall):
     live_display.stop()
 
     args = fc.arguments
+    tool_name = fc.function.name
     full_command = f"{args['command']} {args['args']}"
     
     # Ask for confirmation
-    console.print(f"About to run: [bold blue]{full_command}[/]")
+    console.print(f"About to run {tool_name}: [bold blue]{full_command}[/]")
     response = (
         Prompt.ask("Do you want to continue?", choices=["y", "n"], default="y")
         .strip()
@@ -119,8 +120,8 @@ def get_tool_help(command: str, sub_command: Optional[str] = None, help_arg: str
 
 
 @tool(pre_hook=confirm_command_execution)
-def execute_command(command: str, args: str, work_dir: str = ".") -> str:
-    """Execute a command-line tool with the given arguments.
+def run_shell_command(command: str, args: str, work_dir: str = ".") -> str:
+    """Run a shell command with the given arguments.
 
     Args:
         command: The command to execute
@@ -130,7 +131,22 @@ def execute_command(command: str, args: str, work_dir: str = ".") -> str:
     Returns:
         str: The command output
     """     
-    return ShellToolkit().execute(command, args, work_dir)
+    return ShellToolkit().run(command, args, work_dir)
+
+
+@tool(pre_hook=confirm_command_execution)
+def run_shell_command_background(command: str, args: str, work_dir: str = ".") -> dict:
+    """Run a shell command with the given arguments in the background.
+
+    Args:
+        command: The command to execute
+        args: Arguments to pass to the command
+        work_dir: Working directory for command execution
+
+    Returns:
+        dict: Process status information
+    """
+    return ShellToolkit().run_background(command, args, work_dir)
 
 
 @tool
@@ -171,7 +187,7 @@ You are a helpful assistant that uses command-line tools to complete the user's 
 Follow these instructions strictly:
 
 1. You can use the provided tools or other system tools as appropriate.
-2. Always use `get_tool_help` and `execute_command` to interact with command-line tools.
+2. Always use `get_tool_help`, `execute_command`, `execute_command_background` to interact with command-line tools.
 3. Use the appropriate tool combinations to complete the task efficiently.
 4. Do not ask unnecessary questions - try to accomplish the task directly.
 
@@ -262,7 +278,13 @@ def main():
     agent = Agent(
         model=model,
         instructions=dedent(system_prompt),
-        tools=[get_tool_help, execute_command, fetch_website_content, ThinkingTools()],
+        tools=[
+            get_tool_help,
+            run_shell_command,
+            run_shell_command_background,
+            fetch_website_content,
+            ThinkingTools()
+        ],
         show_tool_calls=True,
         markdown=True,
         debug_mode=args.debug,

@@ -1,6 +1,6 @@
 import subprocess
-import sys
-from typing import Dict, List, Optional, Tuple
+import tempfile
+from typing import List, Optional
 
 
 class ShellToolkit:
@@ -24,7 +24,7 @@ class ShellToolkit:
         args = f"{sub_command} {help_arg}" if sub_command else help_arg
         return self.execute(command, args)
     
-    def _truncate_output(self, lines: List[str], tail_lines: int = 100) -> str:
+    def truncate_output(self, lines: List[str], tail_lines: int = 30) -> str:
         """Truncate output lines and add notification if necessary.
         
         Args:
@@ -39,27 +39,23 @@ class ShellToolkit:
             return ''.join(lines)
         
         else:
+            nums_truncated = len(lines) - tail_lines
             lines = lines[-tail_lines:]
             
-            output = f'''...(truncated {len(lines)} lines)...
+            output = f'''...(truncated {nums_truncated} lines)...
             {lines}
             '''
             
             return output.strip()
 
     
-    def execute(self, 
-            command: str, 
-            args: str,
-            work_dir: str = ".", 
-            stream_output: bool = False) -> str:
-        """Execute the command-line tool.
+    def run(self, command: str, args: str, work_dir: str = ".") -> str:
+        """Run a shell command with the given arguments.
         
         Args:
             command: The command to execute
             args: Arguments to pass to the command
             work_dir: Working directory for the command
-            stream_output: Whether to stream output in real-time and print to terminal
             
         Returns:
             str: The output of the command.
@@ -67,68 +63,60 @@ class ShellToolkit:
         full_command = f"{command} {args}"
 
         try:
-            # Create process
-            process = subprocess.Popen(
+            process = subprocess.run(
                 full_command,
                 shell=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
                 text=True,
-                bufsize=1,
-                cwd=work_dir,
-                universal_newlines=True
+                capture_output=True,
+                cwd=work_dir
             )
-            
-            output_lines = []
-            error_lines = []
-            
-            if stream_output:
-                # Stream output in real-time and print to terminal
-                while True:
-                    # Check stdout
-                    stdout_line = process.stdout.readline()
-                    if stdout_line:
-                        print(stdout_line, end='')
-                        output_lines.append(stdout_line)
-                    
-                    # Check stderr
-                    stderr_line = process.stderr.readline()
-                    if stderr_line:
-                        print(stderr_line, end='', file=sys.stderr)
-                        error_lines.append(stderr_line)
-                    
-                    # Check if process has terminated
-                    if process.poll() is not None:
-                        # Read any remaining output
-                        for line in process.stdout:
-                            print(line, end='')
-                            output_lines.append(line)
-                        
-                        for line in process.stderr:
-                            print(line, end='', file=sys.stderr)
-                            error_lines.append(line)
-                        break
+
+            if process.returncode == 0:
+                return process.stdout
             else:
-                # Silently wait for process to complete and collect all output
-                stdout, stderr = process.communicate()
-                
-                if stdout:
-                    output_lines.append(stdout)
-                
-                if stderr:
-                    error_lines.append(stderr)
-            
-            # Determine final output based on return code
-            returncode = process.poll()
-       
-            if returncode == 0:
-                return self._truncate_output(output_lines)
-            else:
-                error_output = self._truncate_output(error_lines)
-                return f"Error: {error_output}"
+                return f"Error: {process.stderr}"
                 
         except Exception as e:
-            error_message = f"Error: {str(e)}"
-            if stream_output:
-                print(error_message, file=sys.stderr)
-            return error_message
+            return f"Error: {str(e)}"
+        
+    
+    def run_background(self, command: str, args: str, work_dir: str = ".") -> dict:
+        """Run a shell command with the given arguments in the background.
+        
+        Args:
+            command: The command to execute
+            args: Arguments to pass to the command
+            work_dir: Working directory for the command
+            
+        Returns:
+            dict: Process information including the path to output file.
+        """
+        full_command = f"{command} {args}"
+        
+        try:
+            # create a temp file
+            temp_file = tempfile.NamedTemporaryFile(delete=False, mode='w+', suffix='.log')
+            temp_file_path = temp_file.name
+            temp_file.close()
+            
+            # redirect output to the temp file
+            with open(temp_file_path, 'w') as output_file:
+                process = subprocess.Popen(
+                    full_command,
+                    shell=True,
+                    cwd=work_dir,
+                    stdout=output_file,
+                    stderr=output_file
+                )
+
+            return {
+                "pid": process.pid,
+                "cwd": work_dir,
+                "command": full_command,
+                "output_file": temp_file_path
+            }
+
+        except Exception as e:                    
+            return {
+                "error": str(e)
+            }
