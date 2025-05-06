@@ -4,7 +4,7 @@ requires-python = ">=3.11"
 
 [[package]]
 name = "agno"
-version = "1.4.3"
+version = "1.4.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "docstring-parser" },
@@ -20,9 +20,9 @@ dependencies = [
     { name = "typer" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/10/f6/bbe01bb5508132e2bf2e02f9865f3bbd7c13936d59786d74f47fb200fc0d/agno-1.4.3.tar.gz", hash = "sha256:90276f6f8af06a97e984093dbd676bfce4d0ae3b858fad10ea246da450e37076", size = 525080 }
+sdist = { url = "https://files.pythonhosted.org/packages/6f/be/8ec538bb5b8496e906b3e63f9144232db85c03f6073c29404c976b55277d/agno-1.4.4.tar.gz", hash = "sha256:154af5f09f24421916616654537807d3bdb1fa9e3f6fcb8c0daadfa75e11f93c", size = 527971 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c0/07/8d9adaafdc08731114e67469317c7b1566fafb828bddc359fe64cf9cf1eb/agno-1.4.3-py3-none-any.whl", hash = "sha256:f92aa8d4b0c977335cd16d1aeb46718fc0c0526bfaeeca40e22f56d130bf7aeb", size = 689513 },
+    { url = "https://files.pythonhosted.org/packages/f1/c5/9437d7396d4f2c9ad25d436655cec90f7cf7c2de6ad954241e4f85cbbab6/agno-1.4.4-py3-none-any.whl", hash = "sha256:3baee2e9e0a78d15880d3fd4c5e050635dadbfd1a541d00f96946a6cf3559a7f", size = 693031 },
 ]
 
 [[package]]
@@ -82,7 +82,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "agno", specifier = ">=1.4.3" },
+    { name = "agno", specifier = ">=1.4.4" },
     { name = "html2text", specifier = ">=2025.4.15" },
     { name = "openai", specifier = ">=1.76.2" },
     { name = "sqlalchemy", specifier = ">=2.0.40" },

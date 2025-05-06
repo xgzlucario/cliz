@@ -17,7 +17,6 @@ from agno.storage.sqlite import SqliteStorage
 from agno.tools import FunctionCall, tool
 from agno.tools.thinking import ThinkingTools
 from rich.console import Console
-from rich.pretty import pprint
 from rich.prompt import Prompt
 
 from . import __version__
@@ -187,7 +186,7 @@ You are a helpful assistant that uses command-line tools to complete the user's 
 Follow these instructions strictly:
 
 1. You can use the provided tools or other system tools as appropriate.
-2. Always use `get_tool_help`, `execute_command`, `execute_command_background` to interact with command-line tools.
+2. Always use `get_tool_help`, `run_shell_command`, `run_shell_command_background` to interact with command-line tools.
 3. Use the appropriate tool combinations to complete the task efficiently.
 4. Do not ask unnecessary questions - try to accomplish the task directly.
 
