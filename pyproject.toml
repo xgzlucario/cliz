@@ -1,13 +1,13 @@
 [project]
 name = "cliz"
-version = "0.1.3"
+version = "0.1.4"
 description = "A useful command-line agent help you work with your favorite tools"
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
 authors = [{ name = "lucario", email = "xgzlucario@foxmail.com" }]
 dependencies = [
-    "agno>=1.4.4",
+    "agno==1.4.3",
     "html2text>=2025.4.15",
     "openai>=1.76.2",
     "sqlalchemy>=2.0.40",

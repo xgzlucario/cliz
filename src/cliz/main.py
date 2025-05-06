@@ -7,8 +7,6 @@ from pathlib import Path
 from textwrap import dedent
 from typing import Any, Dict, Optional
 
-import html2text
-import httpx
 import yaml
 from agno.agent import Agent
 from agno.exceptions import StopAgentRun
@@ -148,38 +146,6 @@ def run_shell_command_background(command: str, args: str, work_dir: str = ".") -
     return ShellToolkit().run_background(command, args, work_dir)
 
 
-@tool
-def fetch_website_content(url: str, output_file: str) -> str:
-    """Fetch and save `markdown` formatted content from a website.
-
-    Args:
-        url: The URL of the website to fetch
-        output_file: The file to save the content to
-
-    Returns:
-        A message describing the result of the operation
-    """
-    try:
-        response = httpx.get(url)
-        response.raise_for_status()  # Raise exception for HTTP errors
-        
-        # Convert HTML to markdown text
-        converter = html2text.HTML2Text()
-        converter.ignore_links = True
-        text_content = converter.handle(response.text)
-
-        # Save to file
-        with open(output_file, "w") as f:
-            f.write(text_content)
-
-        return f"Successfully saved content to {output_file} ({len(text_content)} bytes)"
-    
-    except Exception as e:
-        error_msg = f"Failed to fetch content from {url}: {str(e)}"
-        logger.error(error_msg)
-        return error_msg
-
-
 SYSTEM_PROMPT = """
 你是一个强大的智能命令行助手, 由先进的AI技术驱动。你能够理解和执行各种命令行任务, 帮助用户高效完成工作。
 
@@ -192,7 +158,6 @@ SYSTEM_PROMPT = """
 1. get_tool_help - 获取命令行工具的帮助信息
 2. run_shell_command - 运行命令行命令
 3. run_shell_command_background - 在后台运行命令行命令
-4. fetch_website_content - 获取网站内容并保存为markdown格式
 
 遵循这些工具使用规则:
 1. 始终使用提供的工具与命令行交互，特别是 get_tool_help、run_shell_command 和 run_shell_command_background。
@@ -312,7 +277,6 @@ def main():
             get_tool_help,
             run_shell_command,
             run_shell_command_background,
-            fetch_website_content,
             ThinkingTools()
         ],
         show_tool_calls=True,
