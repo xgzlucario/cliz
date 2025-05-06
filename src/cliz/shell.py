@@ -22,7 +22,7 @@ class ShellToolkit:
             str: The help output.
         """
         args = f"{sub_command} {help_arg}" if sub_command else help_arg
-        return self.execute(command, args)
+        return self.run(command, args)
     
     def truncate_output(self, lines: List[str], tail_lines: int = 30) -> str:
         """Truncate output lines and add notification if necessary.
