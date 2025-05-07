@@ -6,6 +6,7 @@ from datetime import datetime
 from pathlib import Path
 from textwrap import dedent
 from typing import Any, Dict, Optional
+import uuid
 
 import yaml
 from agno.agent import Agent
@@ -283,7 +284,7 @@ def main():
         markdown=True,
         debug_mode=args.debug,
         # Chat history configuration
-        session_id="fake_session_id",
+        session_id=str(uuid.uuid4()),
         storage=SqliteStorage(table_name="agent_sessions", db_file=DB_FILE_PATH),
         add_history_to_messages=chat_history,
         num_history_runs=3,
